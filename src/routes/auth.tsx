@@ -1,7 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
-import { lovable } from "@/integrations/lovable";
 import { supabase } from "@/integrations/supabase/client";
 import { CompanyBrand } from "@/components/company-brand";
 import { Button } from "@/components/ui/button";
@@ -35,14 +34,17 @@ function AuthPage() {
     return () => data.subscription.unsubscribe();
   }, [navigate]);
 
-  async function signIn() {
-    setBusy(true);
-    const result = await lovable.auth.signInWithOAuth("google", { redirect_uri: `${window.location.origin}/auth` });
-    if (result.error) {
-      toast.error("Sign-in failed. Please try again.");
-      setBusy(false);
-    }
+async function signIn() {
+  setBusy(true);
+  const { error } = await supabase.auth.signInWithOAuth({
+    provider: "google",
+    options: { redirectTo: `${window.location.origin}/auth` },
+  });
+  if (error) {
+    toast.error("Sign-in failed. Please try again.");
+    setBusy(false);
   }
+}
 
   return (
     <div className="flex min-h-screen flex-col items-center justify-center gap-8 bg-secondary/60 px-6 font-body">
