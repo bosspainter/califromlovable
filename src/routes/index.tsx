@@ -32,29 +32,43 @@ export const Route = createFileRoute("/")({
       { property: "og:url", content: "/" },
     ],
     links: [{ rel: "canonical", href: "/" }],
-    scripts: [{
-      type: "application/ld+json",
-      children: JSON.stringify({
-        "@context": "https://schema.org",
-        "@type": "HousePainter",
-        name: "Calipro Painting",
-        telephone: "+1-669-666-4552",
-        email: "contact@calipropainting.com",
-        areaServed: [
-          "Concord", "Walnut Creek", "Oakland", "Clayton", "Martinez", "Hercules",
-          "Fairfield", "Antioch", "Danville", "San Ramon", "Hayward", "Berkeley",
-        ].map((city) => ({ "@type": "City", name: `${city}, CA` }))
-          .concat([{ "@type": "Place", name: "San Francisco Bay Area" }]),
-        sameAs: ["https://instagram.com/calipro.painting"],
-        hasOfferCatalog: {
-          "@type": "OfferCatalog",
-          name: "Painting and property care services",
-          itemListElement: ["Residential Painting", "Commercial Painting", "Colour Consulting", "Gutter Cleaning & Repair", "Chimney & Fireplace Cleaning and Repair"].map(name => ({
-            "@type": "Offer", itemOffered: { "@type": "Service", name },
-          })),
-        },
-      }),
-    }],
+scripts: [
+      {
+        async: true,
+        src: "https://www.googletagmanager.com/gtag/js?id=G-9J3JF6BZ9D",
+      },
+      {
+        children: `
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', 'G-9J3JF6BZ9D');
+        `,
+      },
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "HousePainter",
+          name: "Calipro Painting",
+          telephone: "+1-669-666-4552",
+          email: "contact@calipropainting.com",
+          areaServed: [
+            "Concord", "Walnut Creek", "Oakland", "Clayton", "Martinez", "Hercules",
+            "Fairfield", "Antioch", "Danville", "San Ramon", "Hayward", "Berkeley",
+          ].map((city) => ({ "@type": "City", name: `${city}, CA` }))
+            .concat([{ "@type": "Place", name: "San Francisco Bay Area" }]),
+          sameAs: ["https://instagram.com/calipro.painting"],
+          hasOfferCatalog: {
+            "@type": "OfferCatalog",
+            name: "Painting and property care services",
+            itemListElement: ["Residential Painting", "Commercial Painting", "Colour Consulting", "Gutter Cleaning & Repair", "Chimney & Fireplace Cleaning and Repair"].map(name => ({
+              "@type": "Offer", itemOffered: { "@type": "Service", name },
+            })),
+          },
+        }),
+      }
+    ],
   }),
   loader: async ({ context }) => {
     await Promise.all([context.queryClient.ensureQueryData(sectionsQuery), context.queryClient.ensureQueryData(galleryQuery)]);
