@@ -249,7 +249,7 @@ function GalleryAdmin() {
 
   return (
     <div className="mt-6 space-y-6">
-      <div className="flex flex-wrap items-center gap-3 rounded-lg border bg-card p-5">
+      <div className="sticky top-0 z-20 flex flex-wrap items-center gap-3 rounded-lg border bg-card p-5">
         <select className={`${field} w-auto`} value={category} onChange={(e) => setCategory(e.target.value as typeof category)}>
           <option value="general">Our work</option>
           <option value="before_after">Before &amp; after</option>
