@@ -21,6 +21,18 @@ export function ContactForm() {
       toast.error("Something went wrong. Please try again.");
       return;
     }
+    fetch("https://api.web3forms.com/submit", {
+  method: "POST",
+  headers: { "Content-Type": "application/json", Accept: "application/json" },
+  body: JSON.stringify({
+    access_key: "beb7732f-ee04-41b8-ab69-fa25beee8e3c",
+    subject: "New quote request - CaliPro Painting",
+    from_name: "CaliPro Website",
+    name: name.trim(),
+    email: email.trim(),
+    message: message.trim(),
+  }),
+}).catch((err) => console.error("Web3Forms error:", err));
     toast.success("Thanks! We've received your request and will be in touch soon.");
     setName("");
     setEmail("");
