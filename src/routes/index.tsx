@@ -39,7 +39,7 @@ export const Route = createFileRoute("/")({
         "@type": "HousePainter",
         name: "Calipro Painting",
         telephone: "+1-669-666-4552",
-        email: "azaryagubov90@gmail.com",
+        email: "contact@calipropainting.com",
         areaServed: [
           "Concord", "Walnut Creek", "Oakland", "Clayton", "Martinez", "Hercules",
           "Fairfield", "Antioch", "Danville", "San Ramon", "Hayward", "Berkeley",
@@ -304,8 +304,8 @@ function HomeSection({ sec }: { sec: Section & { image: string | null } }) {
               <a href="tel:+16696664552" className="inline-flex items-center gap-3 text-lg font-bold text-primary hover:underline">
                 <Phone className="h-5 w-5" /> 669-666-4552
               </a>
-              <a href="mailto:azaryagubov90@gmail.com" className="inline-flex max-w-full items-center gap-3 text-sm font-semibold text-primary hover:underline">
-                <Mail className="h-5 w-5 shrink-0" /><span className="break-all">azaryagubov90@gmail.com</span>
+              <a href="mailto:contact@calipropainting.com" className="inline-flex max-w-full items-center gap-3 text-sm font-semibold text-primary hover:underline">
+                <Mail className="h-5 w-5 shrink-0" /><span className="break-all">contact@calipropainting.com</span>
               </a>
             </div>
           </div>
