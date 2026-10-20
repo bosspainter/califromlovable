@@ -9,13 +9,17 @@ export function createResponsesCall(
 ) {
   const provider = createGoogleGenerativeAI({ apiKey: config.apiKey });
   const result = streamText({
+    onError: ({ error }) => console.error("AI ERROR:", error),
     model: provider(config.model),
     ...(instructions ? { system: instructions } : {}),
     messages,
-    abortSignal: request.signal,
+abortSignal: AbortSignal.any([request.signal, AbortSignal.timeout(45000)]),
   });
   return {
     result,
-    response: () => result.toUIMessageStreamResponse(),
+response: () =>
+  result.toUIMessageStreamResponse({
+    onError: (e) => (e instanceof Error ? e.message : String(e)),
+  }),
   };
 }

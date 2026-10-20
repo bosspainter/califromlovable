@@ -30,6 +30,7 @@ export const Route = createFileRoute("/api/chat")({
   server: {
     handlers: {
       POST: async ({ request }) => {
+        console.log("chat start; key present:", Boolean(process.env["GOOGLE_GENERATIVE_AI_API_KEY"]));
         const ip = request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ?? "local";
         if (isLimited(ip)) return new Response("Too many questions. Please try again later.", { status: 429 });
         const apiKey = process.env['GOOGLE_GENERATIVE_AI_API_KEY'];
@@ -38,7 +39,7 @@ export const Route = createFileRoute("/api/chat")({
         const modelMessages = await convertToModelMessages(messages.slice(-6));
         return createResponsesCall(
           request,
-          { baseURL: "", apiKey, model: "gemini-3.8-flash" },
+          { baseURL: "", apiKey, model: "gemini-3.5-flash-lite" },
           modelMessages,
           INSTRUCTIONS,
         ).response();
