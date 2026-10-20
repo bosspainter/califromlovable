@@ -19,36 +19,39 @@ async function signPaths(paths: string[]): Promise<Record<string, string>> {
   return map;
 }
 
-export const sectionsQuery = queryOptions({
-  queryKey: ["cms", "sections"],
-  queryFn: async (): Promise<(Section & { image: string | null })[]> => {
+const STALE_TIME = 1000 * 60 * 60 ; // 1 saat
+function cmsQuery<T>(name: string, queryFn: () => Promise<T>) {
+  return queryOptions({
+    queryKey: ["cms", name],
+    staleTime: STALE_TIME,
+    queryFn,
+  });
+}
+
+export const sectionsQuery = cmsQuery(
+  "sections",
+  async (): Promise<(Section & { image: string | null })[]> => {
     const { data, error } = await supabase.from("site_sections").select("*").order("position");
     if (error) throw error;
     const urls = await signPaths(data.map((s) => s.image_path ?? ""));
     return data.map((s) => ({ ...s, image: s.image_path ? (urls[s.image_path] ?? null) : null }));
   },
+);
+
+export const galleryQuery = cmsQuery("gallery", async (): Promise<GalleryImage[]> => {
+  const { data, error } = await supabase.from("gallery_images").select("*").order("position").order("created_at");
+  if (error) throw error;
+  const urls = await signPaths(data.map((g) => g.storage_path ?? ""));
+  return data
+    .map((g) => ({ ...g, src: g.storage_path ? (urls[g.storage_path] ?? "") : (g.image_url ?? "") }))
+    .filter((g) => g.src);
 });
 
-export const galleryQuery = queryOptions({
-  queryKey: ["cms", "gallery"],
-  queryFn: async (): Promise<GalleryImage[]> => {
-    const { data, error } = await supabase.from("gallery_images").select("*").order("position").order("created_at");
-    if (error) throw error;
-    const urls = await signPaths(data.map((g) => g.storage_path ?? ""));
-    return data
-      .map((g) => ({ ...g, src: g.storage_path ? (urls[g.storage_path] ?? "") : (g.image_url ?? "") }))
-      .filter((g) => g.src);
-  },
-});
-
-export const postsQuery = queryOptions({
-  queryKey: ["cms", "posts"],
-  queryFn: async (): Promise<Post[]> => {
-    const { data, error } = await supabase.from("project_posts").select("*").order("created_at", { ascending: false });
-    if (error) throw error;
-    const urls = await signPaths(data.map((p) => p.cover_path ?? ""));
-    return data.map((p) => ({ ...p, cover: p.cover_path ? (urls[p.cover_path] ?? null) : null }));
-  },
+export const postsQuery = cmsQuery("posts", async (): Promise<Post[]> => {
+  const { data, error } = await supabase.from("project_posts").select("*").order("created_at", { ascending: false });
+  if (error) throw error;
+  const urls = await signPaths(data.map((p) => p.cover_path ?? ""));
+  return data.map((p) => ({ ...p, cover: p.cover_path ? (urls[p.cover_path] ?? null) : null }));
 });
 
 export async function uploadMedia(file: File, folder: string): Promise<string> {

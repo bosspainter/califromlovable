@@ -7,7 +7,7 @@ export function GalleryGrid({ items }: { items: { id: string; src: string; capti
     <div className="columns-1 gap-8 sm:columns-2 lg:columns-3">
       {items.map((item) => (
         <figure key={item.id} className="mb-8 break-inside-avoid">
-          <img src={item.src} alt={`Calipro Painting project: ${item.caption || "painting work"}`} loading="lazy" className="h-auto w-full" />
+          <img suppressHydrationWarning src={item.src} alt={`Calipro Painting project: ${item.caption || "painting work"}`} loading="lazy" className="h-auto w-full" />
           {(item.caption || item.description) && (
             <figcaption className="border-b border-border py-5">
               {item.caption && <h3 className="font-display text-lg font-bold">{item.caption}</h3>}

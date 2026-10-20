@@ -34,18 +34,6 @@ export const Route = createFileRoute("/")({
     links: [{ rel: "canonical", href: "/" }],
 scripts: [
       {
-        async: true,
-        src: "https://www.googletagmanager.com/gtag/js?id=G-9J3JF6BZ9D",
-      },
-      {
-        children: `
-          window.dataLayer = window.dataLayer || [];
-          function gtag(){dataLayer.push(arguments);}
-          gtag('js', new Date());
-          gtag('config', 'G-9J3JF6BZ9D');
-        `,
-      },
-      {
         type: "application/ld+json",
         children: JSON.stringify({
           "@context": "https://schema.org",

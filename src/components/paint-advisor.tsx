@@ -4,6 +4,27 @@ import { DefaultChatTransport } from "ai";
 import ReactMarkdown from "react-markdown";
 import { Paintbrush, Plus, SendHorizontal, MessageSquare } from "lucide-react";
 
+const MAX_PER_CHAT = 5;
+const MAX_CHATS = 3;
+const MAX_TOTAL = 10;
+const WINDOW = 60 * 60 * 1000; // 1 hour
+
+function canASK(){
+  try {
+    const now = Date.now();
+    const arr: number[] = JSON.parse(localStorage.getItem("pa_hits") ?? "[]").filter((t: number) => now - t < WINDOW);
+    if (arr.length >= MAX_TOTAL) {
+      localStorage.setItem("pa_hits", JSON.stringify(arr));
+      return false;
+    }
+    arr.push(now);
+    localStorage.setItem("pa_hits", JSON.stringify(arr));
+    return true;
+  } catch (e) {
+    return true; // Allow asking if there's an error
+  }
+}
+
 const SUGGESTIONS = [
   "What colour is best for my house exterior?",
   "Which paint finish is best for kitchen cabinets?",
@@ -22,6 +43,9 @@ function ChatWindow({ id, onFirstMessage }: { id: string; onFirstMessage: (t: st
     transport: new DefaultChatTransport({ api: "/api/chat" }),
   });
   const busy = status === "submitted" || status === "streaming";
+  const [bloacked, setBlocked] = useState(false);
+  const userCount = messages.filter((m) => m.role === "user").length;
+  const limitReached = userCount >= MAX_PER_CHAT || bloacked;
 
   useEffect(() => {
     const container = messagesRef.current;
@@ -34,7 +58,11 @@ function ChatWindow({ id, onFirstMessage }: { id: string; onFirstMessage: (t: st
 
   const send = (text: string) => {
     const t = text.trim();
-    if (!t || busy) return;
+    if (!t || busy || limitReached) return;
+    if(!canASK()){
+      setBlocked(true);
+      return;
+    }
     if (messages.length === 0) onFirstMessage(t);
     sendMessage({ text: t });
     setInput("");
@@ -83,6 +111,13 @@ function ChatWindow({ id, onFirstMessage }: { id: string; onFirstMessage: (t: st
         ))}
         {status === "submitted" && <p className="text-sm text-muted-foreground">Mixing up an answer…</p>}
         {error && <p className="text-sm text-destructive">Sorry, something went wrong. Please try again.</p>}
+      {
+        limitReached && (
+          <p className="text-sm text-muted-foreground">
+            Questions limit reached. Please start a new chat or try again later.
+          </p>
+        )
+      }
       </div>
       <form
         onSubmit={(e) => {
@@ -94,6 +129,7 @@ function ChatWindow({ id, onFirstMessage }: { id: string; onFirstMessage: (t: st
         <textarea
           ref={inputRef}
           value={input}
+          disabled={limitReached}
           onChange={(e) => setInput(e.target.value)}
           onKeyDown={(e) => {
             if (e.key === "Enter" && !e.shiftKey) {
@@ -107,7 +143,7 @@ function ChatWindow({ id, onFirstMessage }: { id: string; onFirstMessage: (t: st
         />
         <button
           type="submit"
-          disabled={busy || !input.trim()}
+          disabled={busy || limitReached || !input.trim()}
           aria-label="Send"
           className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary text-primary-foreground disabled:opacity-50"
         >
@@ -124,6 +160,7 @@ export function PaintAdvisor() {
   const [counter, setCounter] = useState(1);
 
   const newChat = () => {
+    if (threads.length >= MAX_CHATS) return;
     const id = `chat-${counter + 1}`;
     setCounter((c) => c + 1);
     setThreads((t) => [{ id, title: "New chat" }, ...t]);
@@ -135,7 +172,8 @@ export function PaintAdvisor() {
       <aside className="border-b border-border bg-secondary/50 p-3 md:border-b-0 md:border-r">
         <button
           onClick={newChat}
-          className="mb-3 flex w-full items-center justify-center gap-2 rounded-xl bg-primary px-3 py-2 text-sm font-semibold text-primary-foreground"
+          disabled={threads.length >= MAX_CHATS}
+          className="mb-3 flex w-full items-center justify-center gap-2 rounded-xl bg-primary px-3 py-2 text-sm font-semibold text-primary-foreground disabled:opacity-50"
         >
           <Plus className="h-4 w-4" /> New question
         </button>

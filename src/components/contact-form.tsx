@@ -2,6 +2,7 @@ import { useState, type FormEvent } from "react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
+import {track} from "@/lib/analytics";
 
 export function ContactForm() {
   const [name, setName] = useState("");
@@ -21,6 +22,7 @@ export function ContactForm() {
       toast.error("Something went wrong. Please try again.");
       return;
     }
+    track("form_submit", {place: "contact"});
     fetch("https://api.web3forms.com/submit", {
   method: "POST",
   headers: { "Content-Type": "application/json", Accept: "application/json" },
