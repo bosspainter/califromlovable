@@ -1,19 +1,61 @@
-<!-- LOVABLE:BEGIN -->
-> [!IMPORTANT]
-> This project is connected to [Lovable](https://lovable.dev). Avoid rewriting
-> published git history — force pushing, or rebasing/amending/squashing commits
-> that are already pushed — as it rewrites history on Lovable's side and the
-> user will likely lose their project history.
->
-> Commits you push to the connected branch sync back to Lovable and show up in
-> the editor, so keep the branch in a working state.
-<!-- LOVABLE:END -->
+Project Overview
 
-- Keep quote submissions stored in Lovable Cloud independently of email delivery so sender-domain setup never causes customer requests to be lost.
-- Represent online reference photos separately from verified company projects; only verified project records may carry completion dates.
-- Keep uploaded project comparisons in a dedicated gallery with uncropped images so both before and after remain visible.
-- Reuse shared company-brand and phone elements across content-page headers so contact details stay consistent.
-- Keep the top contact strip shared across content pages and use the dedicated uncropped gallery beneath the homepage photo opening so contact placement and project authenticity stay consistent.
-- Home page sections, gallery photos, and project posts are stored in Lovable Cloud tables and edited via /admin; built-in sections are identified by a fixed key so their layout stays in code while text/order/visibility come from the database.
-- Admin access is granted only through the user_roles table (owner email auto-granted by a signup trigger); never decide admin status client-side alone.
-- Uploaded media lives in the private site-media bucket and is shown via signed URLs because the workspace blocks public buckets.
+This project is an independently hosted web application featuring dynamic content management, custom authentication, private file storage, and integrated AI capabilities.
+
+Core Features & System Architecture
+
+1. Form Handling & Quote Submissions
+
+Form Submissions: Contact and request forms automatically dispatch email notifications via W3Forms.
+
+Data Persistence: Quote submissions are stored independently in the Supabase database prior to/alongside email delivery, ensuring no customer requests are lost due to mail server or domain issues.
+
+2. AI Integration
+
+Interactive Q&A: AI assistant powered by Gemini 2.8 Flash Lite (configured for responsive customer Q&A and support interaction).
+
+3. Media & Storage Management
+
+Private Buckets: All uploaded project media and assets are stored securely in Supabase Storage (site-media private bucket).
+
+Signed URLs: Images and dynamic assets are rendered using temporary signed URLs to maintain security and comply with private bucket policies.
+
+Project Gallery: Dedicated gallery for uploaded project comparisons using uncropped images, preserving full visibility for before-and-after views.
+
+Reference Distinction: Online reference photos are maintained separately from verified company projects (completion dates are restricted strictly to verified project records).
+
+4. Database & Dynamic Content Control
+
+Dynamic Content: Homepage sections, gallery photos, and project posts are managed dynamically via the Supabase backend.
+
+Fixed Layout Keys: Built-in sections use fixed key identifiers so layout structures remain in code while text, ordering, and visibility are managed via database records.
+
+Consistent Branding: Shared company branding, phone elements, and top contact strips are reused across content pages and headers for complete site consistency.
+
+5. Authentication & Admin Panel
+
+Access Route: Admin management is accessed via the /auth route using email verification.
+
+Role-Based Security: Admin access is governed strictly by the user_roles table (with owner access automatically assigned via database triggers upon signup). Security decisions are enforced on the backend/database level and never exclusively client-side.
+
+Management Dashboard: Admins can edit homepage sections, gallery items, dynamic content, and system parameters directly from the /admin control panel.
+
+Deployment & Setup
+
+Database & Auth: Connect to your self-hosted or managed Supabase instance. Ensure the required schema migration scripts (user_roles table, storage bucket rules, and triggers) are applied.
+
+Environment Variables:
+
+VITE_SUPABASE_URL: Your Supabase Project URL
+
+VITE_SUPABASE_ANON_KEY: Your Supabase Public Anon Key
+
+W3FORMS_ACCESS_KEY: W3Forms API key for form submissions
+
+GEMINI_API_KEY: API key for Gemini 2.8 Flash Lite integration
+
+Build & Run:
+
+npm install
+npm run build
+npm run start
