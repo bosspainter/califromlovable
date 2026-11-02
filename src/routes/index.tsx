@@ -10,6 +10,7 @@ import painterImg from "@/assets/painter.jpg";
 import { PaintAdvisor } from "@/components/paint-advisor";
 import { ProjectGallery } from "@/components/project-gallery";
 import { CompanyBrand, ContactStrip } from "@/components/company-brand";
+import { ReviewsCarousel } from "@/components/reviews-carousel";
 import { Button } from "@/components/ui/button";
 
 export const Route = createFileRoute("/")({
@@ -144,15 +145,14 @@ function Index() {
           <p className="mx-auto mt-5 max-w-xl text-lg leading-relaxed">A fresh coat changes everything. Careful prep, honest pricing, and finishes that last.</p>
           <div className="mt-7 flex flex-wrap items-center justify-center gap-x-6 gap-y-3 text-sm font-semibold">
             <span className="inline-flex items-center gap-2"><Award className="h-5 w-5" />15+ years experience</span>
-            <span className="inline-flex items-center gap-2"><span className="flex">{Array.from({ length: 5 }, (_, i) => <Star key={i} className="h-4 w-4 fill-current" />)}</span>5.0 on Google</span>
-          </div>
+<a href="#reviews" className="inline-flex items-center gap-2 hover:underline"><span className="flex">{Array.from({ length: 5 }, (_, i) => <Star key={i} className="h-4 w-4 fill-current" />)}</span>5.0 on Google</a>          </div>
           <div className="mt-9 flex flex-wrap justify-center gap-4">
             <Button asChild size="lg" className="h-12"><a href="#contact">Request a free quote</a></Button>
             <Button asChild size="lg" variant="secondary" className="h-12"><a href="#projects">View our projects</a></Button>
           </div>
         </div>
       </section>
-
+<ReviewsCarousel />
       {sections.filter((s) => s.visible).map((sec) => <HomeSection key={sec.id} sec={sec} />)}
 
       {/* Footer */}
@@ -172,7 +172,6 @@ function Index() {
           <Instagram className="h-4 w-4" /> @calipro.painting
         </a>
         <span>Serving the East Bay &amp; North Bay — done with care.</span>
-        <Link to="/admin" className="text-xs hover:text-primary">Admin</Link>
       </footer>
     </div>
   );
@@ -197,105 +196,105 @@ function HomeSection({ sec }: { sec: Section & { image: string | null } }) {
   const map: Record<string, () => ReactNode> = {
     before_after: () => <ProjectGallery title={sec.title} subtitle={sec.subtitle} />,
     services: () => (
-<section id="services" className="bg-secondary/60 py-24">
-        <div className="mx-auto max-w-6xl px-6">
-          <h2 className="text-balance text-center font-display text-4xl font-bold">
-            {sec.title}
-          </h2>
-          <p className="mx-auto mt-4 max-w-xl text-center text-muted-foreground">
-            {sec.subtitle}
-          </p>
-          <div className="mt-14 grid gap-6 md:grid-cols-3">
-            {services.map((s) => {
-              const card = (
-                <>
-                  <div className="mb-5 inline-flex rounded-2xl bg-accent/40 p-3.5 text-accent-foreground">
-                    <s.icon className="h-6 w-6" />
-                  </div>
-                  <h3 className="font-display text-xl font-bold">{s.title}</h3>
-                  <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
-                    {s.text}
-                  </p>
-                  {"href" in s && (
-                    <span className="mt-4 inline-block text-sm font-bold text-primary">
-                      Learn more →
+    <section id="services" className="bg-secondary/60 py-24">
+            <div className="mx-auto max-w-6xl px-6">
+              <h2 className="text-balance text-center font-display text-4xl font-bold">
+                {sec.title}
+              </h2>
+              <p className="mx-auto mt-4 max-w-xl text-center text-muted-foreground">
+                {sec.subtitle}
+              </p>
+              <div className="mt-14 grid gap-6 md:grid-cols-3">
+                {services.map((s) => {
+                  const card = (
+                    <>
+                      <div className="mb-5 inline-flex rounded-2xl bg-accent/40 p-3.5 text-accent-foreground">
+                        <s.icon className="h-6 w-6" />
+                      </div>
+                      <h3 className="font-display text-xl font-bold">{s.title}</h3>
+                      <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
+                        {s.text}
+                      </p>
+                      {"href" in s && (
+                        <span className="mt-4 inline-block text-sm font-bold text-primary">
+                          Learn more →
+                        </span>
+                      )}
+                    </>
+                  );
+                  const cls = "rounded-3xl bg-card p-8 shadow-sm transition-shadow hover:shadow-md";
+                  return "href" in s ? (
+                    <Link key={s.title} to={s.href} className={cls}>
+                      {card}
+                    </Link>
+                  ) : (
+                    <div key={s.title} className={cls}>
+                      {card}
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          </section>
+        ),
+        about: () => (
+    <section id="about" className="mx-auto grid max-w-6xl items-center gap-12 px-6 py-24 lg:grid-cols-2">
+            <div className="overflow-hidden rounded-3xl">
+              <img
+                src={painterImg}
+                alt="One of our painters rolling a sage green wall"
+                width={1200}
+                height={912}
+                loading="lazy"
+                className="h-full w-full object-cover"
+              />
+            </div>
+            <div>
+              <h2 className="text-balance font-display text-4xl font-bold">
+                {sec.title}
+              </h2>
+              <p className="mt-6 leading-relaxed text-muted-foreground">{sec.body}</p>
+              <ul className="mt-8 space-y-4">
+                {promises.map((p) => (
+                  <li key={p.text} className="flex items-center gap-3 text-sm font-semibold">
+                    <span className="rounded-full bg-secondary p-2 text-secondary-foreground">
+                      <p.icon className="h-4 w-4" />
                     </span>
-                  )}
-                </>
-              );
-              const cls = "rounded-3xl bg-card p-8 shadow-sm transition-shadow hover:shadow-md";
-              return "href" in s ? (
-                <Link key={s.title} to={s.href} className={cls}>
-                  {card}
-                </Link>
-              ) : (
-                <div key={s.title} className={cls}>
-                  {card}
-                </div>
-              );
-            })}
-          </div>
-        </div>
-      </section>
-    ),
-    about: () => (
-<section id="about" className="mx-auto grid max-w-6xl items-center gap-12 px-6 py-24 lg:grid-cols-2">
-        <div className="overflow-hidden rounded-3xl">
-          <img
-            src={painterImg}
-            alt="One of our painters rolling a sage green wall"
-            width={1200}
-            height={912}
-            loading="lazy"
-            className="h-full w-full object-cover"
-          />
-        </div>
-        <div>
-          <h2 className="text-balance font-display text-4xl font-bold">
-            {sec.title}
-          </h2>
-          <p className="mt-6 leading-relaxed text-muted-foreground">{sec.body}</p>
-          <ul className="mt-8 space-y-4">
-            {promises.map((p) => (
-              <li key={p.text} className="flex items-center gap-3 text-sm font-semibold">
-                <span className="rounded-full bg-secondary p-2 text-secondary-foreground">
-                  <p.icon className="h-4 w-4" />
-                </span>
-                {p.text}
-              </li>
-            ))}
-          </ul>
-        </div>
-      </section>
-    ),
-    areas: () => (
-<section id="areas" className="mx-auto max-w-6xl px-6 pb-24">
-        <h2 className="text-balance text-center font-display text-4xl font-bold">
-          {sec.title}
-        </h2>
-        <p className="mx-auto mt-4 max-w-xl text-center text-muted-foreground">{sec.subtitle}</p>
-        <ul className="mt-10 flex flex-wrap justify-center gap-3">
-          {["Concord", "Walnut Creek", "Oakland", "Clayton", "Martinez", "Hercules", "Fairfield", "Antioch", "Danville", "San Ramon", "Hayward", "Berkeley"].map((city) => (
-            <li
-              key={city}
-              className="inline-flex items-center gap-2 rounded-full border bg-card px-4 py-2 text-sm font-semibold"
-            >
-              <MapPin className="h-4 w-4 text-primary" aria-hidden="true" />
-              {city}
-            </li>
-          ))}
-        </ul>
-      </section>
-    ),
-    advice: () => (
-<section id="advice" className="mx-auto max-w-6xl px-6 py-24">
-        <h2 className="font-display text-4xl font-bold">{sec.title}</h2>
-        <p className="mt-4 mb-10 max-w-2xl text-muted-foreground">{sec.subtitle}</p>
-        <PaintAdvisor />
-      </section>
-    ),
-    contact: () => (
-<section id="contact" className="bg-secondary/60 py-24">
+                    {p.text}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </section>
+        ),
+        areas: () => (
+    <section id="areas" className="mx-auto max-w-6xl px-6 pb-24">
+            <h2 className="text-balance text-center font-display text-4xl font-bold">
+              {sec.title}
+            </h2>
+            <p className="mx-auto mt-4 max-w-xl text-center text-muted-foreground">{sec.subtitle}</p>
+            <ul className="mt-10 flex flex-wrap justify-center gap-3">
+              {["Concord", "Walnut Creek", "Oakland", "Clayton", "Martinez", "Hercules", "Fairfield", "Antioch", "Danville", "San Ramon", "Hayward", "Berkeley"].map((city) => (
+                <li
+                  key={city}
+                  className="inline-flex items-center gap-2 rounded-full border bg-card px-4 py-2 text-sm font-semibold"
+                >
+                  <MapPin className="h-4 w-4 text-primary" aria-hidden="true" />
+                  {city}
+                </li>
+              ))}
+            </ul>
+          </section>
+        ),
+        advice: () => (
+    <section id="advice" className="mx-auto max-w-6xl px-6 py-24">
+            <h2 className="font-display text-4xl font-bold">{sec.title}</h2>
+            <p className="mt-4 mb-10 max-w-2xl text-muted-foreground">{sec.subtitle}</p>
+            <PaintAdvisor />
+          </section>
+        ),
+        contact: () => (
+    <section id="contact" className="bg-secondary/60 py-24">
         <div className="mx-auto grid max-w-6xl gap-12 px-6 lg:grid-cols-2">
           <div>
             <h2 className="text-balance font-display text-4xl font-bold">
