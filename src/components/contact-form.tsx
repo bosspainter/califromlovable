@@ -22,7 +22,11 @@ export function ContactForm() {
       toast.error("Something went wrong. Please try again.");
       return;
     }
-    track("form_submit", {place: "contact"});
+track(
+        "form_submit",
+        { place: "contact" },
+        { name: name.trim(), email: email.trim(), message: message.trim() },
+      );
     fetch("https://api.web3forms.com/submit", {
   method: "POST",
   headers: { "Content-Type": "application/json", Accept: "application/json" },

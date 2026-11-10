@@ -17,6 +17,7 @@ import { Route as GalleryRouteImport } from './routes/gallery'
 import { Route as GutterCleaningRouteImport } from './routes/gutter-cleaning'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
 import { Route as ApiChatRouteImport } from './routes/api/chat'
+import { Route as ApiNotifyRouteImport } from './routes/api/notify'
 import { Route as ProjectsIndexRouteImport } from './routes/projects.index'
 import { Route as ProjectsSlugRouteImport } from './routes/projects.$slug'
 
@@ -59,6 +60,11 @@ const ApiChatRoute = ApiChatRouteImport.update({
   path: '/api/chat',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiNotifyRoute = ApiNotifyRouteImport.update({
+  id: '/api/notify',
+  path: '/api/notify',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ProjectsIndexRoute = ProjectsIndexRouteImport.update({
   id: '/projects/',
   path: '/projects/',
@@ -78,6 +84,7 @@ export interface FileRoutesByFullPath {
   '/gutter-cleaning': typeof GutterCleaningRoute
   '/admin': typeof AuthenticatedAdminRoute
   '/api/chat': typeof ApiChatRoute
+  '/api/notify': typeof ApiNotifyRoute
   '/projects/$slug': typeof ProjectsSlugRoute
   '/projects/': typeof ProjectsIndexRoute
 }
@@ -89,6 +96,7 @@ export interface FileRoutesByTo {
   '/gutter-cleaning': typeof GutterCleaningRoute
   '/admin': typeof AuthenticatedAdminRoute
   '/api/chat': typeof ApiChatRoute
+  '/api/notify': typeof ApiNotifyRoute
   '/projects/$slug': typeof ProjectsSlugRoute
   '/projects': typeof ProjectsIndexRoute
 }
@@ -102,6 +110,7 @@ export interface FileRoutesById {
   '/gutter-cleaning': typeof GutterCleaningRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRoute
   '/api/chat': typeof ApiChatRoute
+  '/api/notify': typeof ApiNotifyRoute
   '/projects/$slug': typeof ProjectsSlugRoute
   '/projects/': typeof ProjectsIndexRoute
 }
@@ -115,6 +124,7 @@ export interface FileRouteTypes {
     | '/gutter-cleaning'
     | '/admin'
     | '/api/chat'
+    | '/api/notify'
     | '/projects/$slug'
     | '/projects/'
   fileRoutesByTo: FileRoutesByTo
@@ -126,6 +136,7 @@ export interface FileRouteTypes {
     | '/gutter-cleaning'
     | '/admin'
     | '/api/chat'
+    | '/api/notify'
     | '/projects/$slug'
     | '/projects'
   id:
@@ -138,6 +149,7 @@ export interface FileRouteTypes {
     | '/gutter-cleaning'
     | '/_authenticated/admin'
     | '/api/chat'
+    | '/api/notify'
     | '/projects/$slug'
     | '/projects/'
   fileRoutesById: FileRoutesById
@@ -150,6 +162,7 @@ export interface RootRouteChildren {
   GalleryRoute: typeof GalleryRoute
   GutterCleaningRoute: typeof GutterCleaningRoute
   ApiChatRoute: typeof ApiChatRoute
+  ApiNotifyRoute: typeof ApiNotifyRoute
   ProjectsSlugRoute: typeof ProjectsSlugRoute
   ProjectsIndexRoute: typeof ProjectsIndexRoute
 }
@@ -212,6 +225,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiChatRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/notify': {
+      id: '/api/notify'
+      path: '/api/notify'
+      fullPath: '/api/notify'
+      preLoaderRoute: typeof ApiNotifyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/projects/': {
       id: '/projects/'
       path: '/projects'
@@ -248,6 +268,7 @@ const rootRouteChildren: RootRouteChildren = {
   GalleryRoute: GalleryRoute,
   GutterCleaningRoute: GutterCleaningRoute,
   ApiChatRoute: ApiChatRoute,
+  ApiNotifyRoute: ApiNotifyRoute,
   ProjectsSlugRoute: ProjectsSlugRoute,
   ProjectsIndexRoute: ProjectsIndexRoute,
 }
